@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,12 +9,18 @@ body {
   margin: 0 auto;
   max-width: 800px;
   padding: 0 20px;
+  /* background-image: url("{% static 'bg.png' %}"); */
+  background-color: rgb(0,0,0);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  text-align: left;
 }
 
 .container {
-  border: 2px solid #dedede;
-  background-color: #a32727;
-  border-radius: 5px;
+  border: 2px solid rgb(215, 215, 215);
+  background-color:rgb(28, 28, 28);
+  border-radius: 3px;
   padding: 10px;
   margin: 10px 0;
 }
@@ -39,7 +47,7 @@ body {
 .container img.right {
   float: right;
   margin-left: 20px;
-  margin-right:0;
+  margin-right: 0;
 }
 
 .time-right {
@@ -51,122 +59,119 @@ body {
   float: left;
   color: #999;
 }
+
+input[type=text], select {
+  width: 50%;
+  padding: 6px 10px;
+  margin: 8px auto;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  text-align: center;
+  display: block;
+}
+
+input[type=submit] {
+  width: 80%;
+  background-color: rgb(255, 255, 255);
+  color: black;
+  font-weight: bold; /* Makes the text bold */
+  padding: 14px 20px;
+  margin: 8px auto; /* This centers the button */
+  border: 2px solid white; /* Adds a solid black border around the button */
+  border-radius: 10px;
+  cursor: pointer;
+  display: block; /* Ensure the input is a block-level element */
+  text-align: center;
+}
+
+
+
+input[type=submit]:hover {
+  background-color:rgb(255, 255, 255);
+  transform: scale(1.1);
+}
+
+div {
+  border-radius: 5px;
+  background-color:rgb(0, 0, 0);
+  padding: 20px;
+}
+
+form {
+  opacity: 1.0; /* corrected opacity value */
+}
 </style>
-<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 </head>
+
 <body>
 
 <h2 style="font-family: cursive;">{{room}}</h2>
 
 <div id="display">
+  <!-- Chat messages appear here -->
+</div>
 
-<!-- <div class="container darker">
-  <b>Tom</b><p>Hello Everyone, How Are You Guys Doing?</p>
-  <span class="time-left">20th, April 2021</span>
-</div> -->
-
+<div class="container">
+  <form id="post-form">
+    {% csrf_token %}
+    <input type="hidden" name="username" id="username" value="{{username}}"/>
+    <input type="hidden" name="room_id" id="room_id" value="{{room_details.id}}"/>
+    <input type="text" name="message" id="message" width="100px" />
+    <input type="submit" value="Send">
+  </form>
 </div>
 
 <script>
-$(document).ready(function(){
-
-setInterval(function(){
+$(document).ready(function() {
+  setInterval(function() {
     $.ajax({
-        type: 'GET',
-        url : "/getMessages/{{room}}/",
-        success: function(response){
-            console.log(response);
-            $("#display").empty();
-            for (var key in response.messages)
-            {
-                var temp="<div class='container darker'><b>"+response.messages[key].user+"</b><p>"+response.messages[key].value+"</p><span class='time-left'>"+response.messages[key].date+"</span></div>";
-                $("#display").append(temp);
-            }
-        },
-        error: function(response){
-            alert('An error occured')
+      type: 'GET',
+      url: "/getMessages/{{room}}/",
+      success: function(response) {
+        console.log(response);
+        $("#display").empty();
+        for (var key in response.messages) {
+          var temp = "<div class='container darker'><b>" +
+            response.messages[key].user +
+            "</b><p>" +
+            response.messages[key].value +
+            "</p><span class='time-left'>" +
+            response.messages[key].date +
+            "</span></div>";
+          $("#display").append(temp);
         }
-    });
-},1000);
-})
-</script>
-
-
-<div class="container">
-    <style>
-
-    input[type=text], select {
-    width: 70%;
-    padding: 6px 10px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    }
-
-    input[type=submit] {
-    width: 100%;
-    background-color: #4CAF50;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    }
-
-    input[type=submit]:hover {
-    background-color: #45a049;
-    }
-
-    div {
-    border-radius: 5px;
-    background-color: #915353;
-    padding: 20px;
-    }
-
-    body {
-      background-image: url('https://wallpapercave.com/wp/wp5278684.jpg'); background-attachment: fixed; background-repeat: no-repeat; background-size: cover; opacity: 70%; text-align: left;
-    }
-
-    form {
-      opacity: 50%;
-    }
-
-    </style>
-
-    <form id="post-form">
-        {% csrf_token %}
-        <input type="hidden" name="username" id="username" value="{{username}}"/>
-        <input type="hidden" name="room_id" id="room_id" value="{{room_details.id}}"/>
-        <input type="text" name="message" id="message" width="100px" />
-        <input type="submit" value="Send">
-    </form>
-</div>
-
-
-</body>
-
-<script type="text/javascript">
-  $(document).on('submit','#post-form',function(e){
-    e.preventDefault();
-
-    $.ajax({
-      type:'POST',
-      url:'/send',
-      data:{
-          username:$('#username').val(),
-          room_id:$('#room_id').val(),
-          message:$('#message').val(),
-        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
       },
-      success: function(data){
-         //alert(data)
+      error: function(response) {
+        alert('An error occurred');
       }
     });
-    document.getElementById('message').value = ''
+  }, 1000);
+});
+
+$(document).on('submit', '#post-form', function(e) {
+  e.preventDefault();
+
+  $.ajax({
+    type: 'POST',
+    url: '/send',
+    data: {
+      username: $('#username').val(),
+      room_id: $('#room_id').val(),
+      message: $('#message').val(),
+      csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+    },
+    success: function(data) {
+      // Message sent
+    }
   });
+
+  document.getElementById('message').value = '';
+});
 </script>
 
+</body>
 </html>

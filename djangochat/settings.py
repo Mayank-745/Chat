@@ -26,7 +26,7 @@ SECRET_KEY = 'm%c30v(4=6q!_ouzf5xx9l7n89pl0#l16lo6+z*g4!49-63@t#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['bruh-chat-k.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['monkechat-ky7m.onrender.com','bruh-chat-k.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'chat'
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -122,7 +122,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STAICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
